@@ -66,6 +66,80 @@ As defined in the requirement users must have email, name and mobile number and 
 
 ---
 
+## How to run Locally
+
+1. create a directory and move to newwly created directory
+
+```shell
+mkdir expense-app
+cd expense-app
+```
+
+2. Make an virtual environment and enable the virtual environment
+
+```shell
+# for windows
+# creating virtual environment
+python -m venv venv
+
+# for linux or unix machine
+# creating virtual environment
+python3 -m venv venv
+```
+
+3. Clone the project
+
+```bash
+  git clone https://github.com/AbhiMisRaw/expense-share-api.git
+```
+
+4. Activate virtual environment.
+
+```shell
+# activating virtual environment
+venv\Script\activate
+
+# activating virtual environment
+source venv/bin/activate
+```
+
+5. Go to the cloned project directory
+
+```bash
+  cd expense-share-api
+```
+
+6. Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+7. Create `.env` file and create `SECRET_KEY` for project.
+
+```shell
+echo DJANGO_SECRET_KEY='<ANY-SECRET-KEY>' > .env
+```
+
+8. Run migrations
+
+```bash
+  python manage.py makemigrations
+  python manage.py migrate
+```
+
+9. Start the server
+
+```bash
+    # for windows
+    python manage.py runserver
+
+    # for linux and unix machine
+    python3 manage.py runserver
+```
+
+---
+
 # Expense API Documentation
 
 ---
@@ -278,7 +352,7 @@ The base URL for all endpoints is `/api/v1/`.
    - **URL:** `/api/v1/expenses/share/`
    - **Method:** `GET`
    - **Description:** This enpoints shows only those expense which are shared by others to `authenticated user`.
-   
+
    - **Response:**
      ```json
      [
@@ -328,3 +402,7 @@ The base URL for all endpoints is `/api/v1/`.
    - **Method:** GET
    - **Description:** Download a summary of all expenses related to the authenticated user.
    - **Response:** Binary file download.
+
+## Support
+
+For support, email abhiimiishra@gmail.com
