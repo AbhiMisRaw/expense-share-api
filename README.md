@@ -398,10 +398,56 @@ The base URL for all endpoints is `/api/v1/`.
    - **Response:** Binary file download.
 
 4. **Download My Total Expenses**
+
    - **URL:** `/api/v1/my-expense/download/`
    - **Method:** GET
    - **Description:** Download a summary of all expenses related to the authenticated user.
    - **Response:** Binary file download.
+
+   ***
+
+## Images
+
+1. User Registration.
+   ![User Registration](./projects_images/register.png)
+   <br>
+
+2. User Login.
+   ![Login](./projects_images/login_successfull.png)
+   <br>
+
+3. Get a `Access Token` from `Refresh Token`,
+   ![Refresh Token](./projects_images/refresh_token.png)
+
+4. Creating an expense.
+   ![Expense Creation 1](./projects_images/Screenshot%202024-07-29%20225858.png)
+   <br>
+
+![Expense Creation 2](./projects_images/test_expense_created.png)
+<br>
+
+- Failed creation of Expense becuase of Validation.
+
+![Fail Expense creation](./projects_images/fail_expense_create.png)
+
+<br>
+
+5. Get All Expenses.
+   ![](./projects_images/get_all_expenses.png)
+   <br>
+
+6. Updating an Expense.
+   ![Update Expense](./projects_images/update_expense.png)
+
+<br>
+
+7. Deleting an Expense.
+   ![Delete Expense](./projects_images/delete_expense.png)
+
+8. Downloading Blanace Sheet pdf All the Expense of `Authenticated User`.
+   ![Download All Expense](./projects_images/pdf_my_total_expense.png)
+
+> User can also view and download an individual Expense weather expense is created by him or shared by others to user However I didn't added any pictures of it.
 
 ## Support
 
