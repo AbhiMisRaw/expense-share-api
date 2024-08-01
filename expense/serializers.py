@@ -48,21 +48,23 @@ class ExpenseSerializer(serializers.ModelSerializer):
                 "Duplicate user found in Participants instances, User must be unique."
             )
 
+        # Checking user must be in participants too.
         if self.context["request"].user.username not in participants_set:
             raise serializers.ValidationError(
                 "Owner of the Expense must be in Participants."
             )
 
-        # Convert usernames to user instances and create ExpenseSplit objects
+        # this is list of tuple containing (user, value)
         user_list = []
+        # Convert usernames to user instances and create ExpenseSplit objects
         for participant_data in participants_data:
             username = participant_data.pop("user")
-
             user = User.objects.filter(username=username).first()
             if user is None:
                 raise serializers.ValidationError(
                     f"User with username {username} does not exist."
                 )
+
             user_list.append((user, participant_data.pop("value")))
 
         # After all validation we save the data
@@ -94,17 +96,19 @@ class ExpenseSerializer(serializers.ModelSerializer):
                 "Duplicate user found in Participants instances, User must be unique."
             )
 
+        # Checking user must be in participants too.
         if self.context["request"].user.username not in participants_set:
             raise serializers.ValidationError(
                 "Owner of the Expense must be in Participants."
             )
 
-        # Convert usernames to user instances and create ExpenseSplit objects
+        # this is list of tuple containing (user, value)
         user_list = []
+        # Convert usernames to user instances and and also checking if user exist or not.
         for participant_data in participants_data:
             username = participant_data.pop("user")
-
             user = User.objects.filter(username=username).first()
+
             if user is None:
                 raise serializers.ValidationError(
                     f"User with username {username} does not exist."
@@ -129,39 +133,55 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
+        """
+        Here we are validating some Critical cases as defined below.
+        1. Expense amount must be in Natural Number [1-n]
+        2. Validation on each Participation amount defined in Requirement.
+
+        Here, We didn't validate the user's in participation array bcz validate method is executed and
+        check for any potentital error in initial request-middleware cycle.
+        It means that user's existance logic will be executed first in initail stage and then during
+        ExpenseSplit object. So it's a good if we use this logic in create/update method.
+
+        """
         amount = data.get("amount")
+        if amount <= 0:
+            raise serializers.ValidationError(
+                "Expense Amount must be a positive Number."
+            )
+
         split_type = data.get("split_type")
         participants = self.initial_data.get("participants", [])
         print(f"PARTICIPANTS : {participants}")
+
+        value_list = []
+        for participant in participants:
+            value_list.append(participant["value"])
+
         if split_type == Expense.EXACT:
-            expense_list = [participant["value"] for participant in participants]
 
-            total = sum(expense_list)
-
+            total = sum(value_list)
             if float(total) != amount:
                 print(f"{amount} != {total}")
                 raise serializers.ValidationError(
                     "The total of splits must equal the expense amount."
                 )
+
         elif split_type == Expense.PERCENTAGE:
-            total_percentage = sum(participant["value"] for participant in participants)
+            total_percentage = sum(value_list)
             if total_percentage != 100:
                 raise serializers.ValidationError(
                     "The total percentage splits must equal 100%."
                 )
         elif split_type == Expense.EQUAL:
-            amount_array = [participant["value"] for participant in participants]
-            amount_set = set(amount_array)
+            amount_set = set(value_list)
             if len(amount_set) != 1:
                 raise serializers.ValidationError(
                     "You must define same amount for each"
                 )
-            if sum(amount_array) != amount:
+            if sum(value_list) != amount:
                 raise serializers.ValidationError(
                     "The total of splits must equal the expense amount."
                 )
 
         return data
-
-
-
